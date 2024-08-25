@@ -12,6 +12,36 @@ const useRecipeStore = create((set) => ({
     recipes: [...state.recipes, newRecipe],
   })),
 
+  // Action to update an existing recipe
+  updateRecipe: (updatedRecipe) =>
+    set((state) => ({
+      recipes: state.recipes.map((recipe) =>
+        recipe.id === updatedRecipe.id ? updatedRecipe : recipe
+      ),
+    })),
+
+  // Action to delete a recipe
+  deleteRecipe: (recipeId) =>
+    set((state) => ({
+      recipes: state.recipes.filter((recipe) => recipe.id !== recipeId),
+    })),
+
+  // Search term for filtering recipes
+  searchTerm: '',
+  
+  // Action to set the search term
+  setSearchTerm: (term) =>
+    set({ searchTerm: term }),
+
+  // Filtered recipes based on search term
+  filteredRecipes: [],
+  filterRecipes: () =>
+    set((state) => ({
+      filteredRecipes: state.recipes.filter((recipe) =>
+        recipe.title.toLowerCase().includes(state.searchTerm.toLowerCase())
+      ),
+    })),
+
   // Favorites management
   favorites: [],
   addFavorite: (recipeId) =>
@@ -33,21 +63,6 @@ const useRecipeStore = create((set) => ({
       );
       return { recommendations: recommended };
     }),
-
-  // Search functionality
-  searchTerm: '',
-  setSearchTerm: (term) =>
-    set((state) => {
-      state.searchTerm = term;
-      state.filterRecipes(); // Filter recipes when search term changes
-    }),
-  filteredRecipes: [],
-  filterRecipes: () =>
-    set((state) => ({
-      filteredRecipes: state.recipes.filter((recipe) =>
-        recipe.title.toLowerCase().includes(state.searchTerm.toLowerCase())
-      ),
-    })),
 }));
 
 export { useRecipeStore };
